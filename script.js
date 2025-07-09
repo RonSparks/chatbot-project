@@ -126,11 +126,23 @@ class Chatbot {
         const paragraph = document.createElement('p');
         paragraph.textContent = content;
         
+        // Add timestamp
+        const timestamp = document.createElement('div');
+        timestamp.className = 'message-timestamp';
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const dateString = now.toLocaleDateString();
+        timestamp.textContent = `${dateString} ${timeString}`;
+        
         messageContent.appendChild(paragraph);
+        messageContent.appendChild(timestamp);
         messageDiv.appendChild(messageContent);
         this.chatMessages.appendChild(messageDiv);
         
-        this.scrollToBottom();
+        // Improved scrolling with a small delay to ensure DOM is updated
+        setTimeout(() => {
+            this.scrollToBottom();
+        }, 10);
     }
     
     addLoadingMessage() {
@@ -152,11 +164,23 @@ class Chatbot {
             </div>
         `;
         
+        // Add timestamp
+        const timestamp = document.createElement('div');
+        timestamp.className = 'message-timestamp';
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const dateString = now.toLocaleDateString();
+        timestamp.textContent = `${dateString} ${timeString}`;
+        
         messageContent.appendChild(loadingDiv);
+        messageContent.appendChild(timestamp);
         messageDiv.appendChild(messageContent);
         this.chatMessages.appendChild(messageDiv);
         
-        this.scrollToBottom();
+        // Improved scrolling with a small delay to ensure DOM is updated
+        setTimeout(() => {
+            this.scrollToBottom();
+        }, 10);
         return messageDiv;
     }
     
@@ -167,7 +191,25 @@ class Chatbot {
     }
     
     scrollToBottom() {
-        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+        // Use multiple methods to ensure scrolling works
+        const scrollHeight = this.chatMessages.scrollHeight;
+        const clientHeight = this.chatMessages.clientHeight;
+        
+        // Method 1: Direct scroll assignment
+        this.chatMessages.scrollTop = scrollHeight;
+        
+        // Method 2: Smooth scroll if supported
+        if (this.chatMessages.scrollTo) {
+            this.chatMessages.scrollTo({
+                top: scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Method 3: Force scroll after a brief delay to handle any rendering delays
+        setTimeout(() => {
+            this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+        }, 50);
     }
     
     showNotification(message, type = 'info') {
